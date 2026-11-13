@@ -2,7 +2,6 @@
 pub mod windows_files {
     use std::ffi::OsString;
     use std::os::windows::ffi::OsStringExt;
-    use windows_sys::Win32::Foundation::{BOOL, HANDLE, HWND};
     use windows_sys::Win32::System::DataExchange::{
         CloseClipboard, GetClipboardData, IsClipboardFormatAvailable, OpenClipboard,
     };
@@ -16,12 +15,12 @@ pub mod windows_files {
                 return None;
             }
 
-            if OpenClipboard(0 as HWND) == 0 {
+            if OpenClipboard(std::ptr::null_mut()) == 0 {
                 return None;
             }
 
             let handle = GetClipboardData(CF_HDROP);
-            if handle == 0 {
+            if handle.is_null() {
                 CloseClipboard();
                 return None;
             }
@@ -50,7 +49,6 @@ pub mod windows_files {
     }
 
     pub fn write_files_to_clipboard(_paths: &[String]) -> Result<(), String> {
-        // Fallback for Windows file writing
         Ok(())
     }
 }

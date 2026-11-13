@@ -28,7 +28,8 @@ body.theme-dark {
   --accent-light: #2a1b0e;
 }
 
-html, body {
+html,
+body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -46,14 +47,18 @@ html, body {
   background: var(--bg-hud);
   border: 2px solid var(--border-hud);
   border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 8px;
   gap: 6px;
   cursor: grab;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .hud-pill:active {
@@ -160,9 +165,18 @@ html, body {
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0.6; transform: scale(0.9); }
+  0% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
 }
 
 /* Slots Container */
