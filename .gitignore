@@ -1,0 +1,13 @@
+/target/
+**/target/
+.DS_Store
+**/.DS_Store
+*.log
+openclipper_settings.json
+openclipper_slots.json
+node_modules/
+dist/
+build/
+.vscode/
+.idea/
+OpenClipper.app/
