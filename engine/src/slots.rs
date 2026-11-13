@@ -299,11 +299,21 @@ mod tests {
         assert_eq!(sm.auto_count(), 2);
 
         let pop1 = sm.auto_paste_pop();
-        assert_eq!(pop1, Some(SlotContent::Text { text: "Item 1".into() }));
+        assert_eq!(
+            pop1,
+            Some(SlotContent::Text {
+                text: "Item 1".into()
+            })
+        );
         assert_eq!(sm.auto_count(), 1);
 
         let pop2 = sm.auto_paste_pop();
-        assert_eq!(pop2, Some(SlotContent::Text { text: "Item 2".into() }));
+        assert_eq!(
+            pop2,
+            Some(SlotContent::Text {
+                text: "Item 2".into()
+            })
+        );
         assert_eq!(sm.auto_count(), 0);
 
         let pop3 = sm.auto_paste_pop();

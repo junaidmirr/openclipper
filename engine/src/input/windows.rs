@@ -1,18 +1,18 @@
 #[cfg(target_os = "windows")]
 pub mod hook {
+    use crate::EngineEvent;
     use crate::clipboard::ClipboardService;
     use crate::input::simulate;
     use crate::settings::SharedSettings;
     use crate::slots::SharedSlotManager;
-    use crate::EngineEvent;
-    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
     use std::sync::Arc;
+    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
     use std::thread;
     use std::time::Duration;
     use windows_sys::Win32::Foundation::{LPARAM, LRESULT, WPARAM};
     use windows_sys::Win32::UI::WindowsAndMessaging::{
-        CallNextHookEx, DispatchMessageW, GetMessageW, SetWindowsHookExW, TranslateMessage,
-        UnhookWindowsHookEx, HHOOK, KBDLLHOOKSTRUCT, MSG, WH_KEYBOARD_LL, WM_KEYDOWN,
+        CallNextHookEx, DispatchMessageW, GetMessageW, HHOOK, KBDLLHOOKSTRUCT, MSG,
+        SetWindowsHookExW, TranslateMessage, UnhookWindowsHookEx, WH_KEYBOARD_LL, WM_KEYDOWN,
         WM_SYSKEYDOWN,
     };
 
@@ -80,12 +80,8 @@ pub mod hook {
         }
 
         thread::spawn(move || unsafe {
-            let hook: HHOOK = SetWindowsHookExW(
-                WH_KEYBOARD_LL,
-                Some(low_level_keyboard_proc),
-                0 as _,
-                0,
-            );
+            let hook: HHOOK =
+                SetWindowsHookExW(WH_KEYBOARD_LL, Some(low_level_keyboard_proc), 0 as _, 0);
 
             if hook == 0 {
                 eprintln!("[OpenClipper Engine] Failed to set Windows keyboard hook");
@@ -374,7 +370,11 @@ pub mod hook {
                 if !was_explicit {
                     let has_items = ctx.slot_manager.lock().unwrap().has_auto_items();
                     if has_items {
-                        let popped = ctx.slot_manager.lock().unwrap().auto_paste_pop_custom(auto_paste_pop);
+                        let popped = ctx
+                            .slot_manager
+                            .lock()
+                            .unwrap()
+                            .auto_paste_pop_custom(auto_paste_pop);
                         if let Some(item) = popped {
                             let _ = ctx.clipboard_service.write_content(&item);
                             (ctx.event_sink)(EngineEvent::SlotsUpdated);
@@ -406,12 +406,12 @@ pub mod hook {
 
 #[cfg(not(target_os = "windows"))]
 pub mod hook {
+    use crate::EngineEvent;
     use crate::clipboard::ClipboardService;
     use crate::settings::SharedSettings;
     use crate::slots::SharedSlotManager;
-    use crate::EngineEvent;
-    use std::sync::atomic::AtomicBool;
     use std::sync::Arc;
+    use std::sync::atomic::AtomicBool;
 
     pub fn start_hook(
         _event_sink: Arc<dyn Fn(EngineEvent) + Send + Sync>,
@@ -422,5 +422,6 @@ pub mod hook {
         _is_cut_mode: Arc<AtomicBool>,
         _is_paste_mode: Arc<AtomicBool>,
         _is_explicit_selection: Arc<AtomicBool>,
-    ) {}
+    ) {
+    }
 }

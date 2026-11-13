@@ -1,13 +1,13 @@
 #[cfg(target_os = "linux")]
 pub mod linux_hook {
+    use crate::EngineEvent;
     use crate::clipboard::ClipboardService;
     use crate::input::simulate;
     use crate::settings::SharedSettings;
     use crate::slots::SharedSlotManager;
-    use crate::EngineEvent;
     use rdev::{Event, EventType, Key};
-    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
     use std::sync::Arc;
+    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
     use std::thread;
     use std::time::Duration;
 
@@ -35,16 +35,19 @@ pub mod linux_hook {
                 let is_up = matches!(event.event_type, EventType::KeyRelease(_));
 
                 match event.event_type {
-                    EventType::KeyPress(Key::ControlLeft) | EventType::KeyPress(Key::ControlRight) => {
+                    EventType::KeyPress(Key::ControlLeft)
+                    | EventType::KeyPress(Key::ControlRight) => {
                         ctrl_pressed.store(true, Ordering::SeqCst);
                     }
-                    EventType::KeyRelease(Key::ControlLeft) | EventType::KeyRelease(Key::ControlRight) => {
+                    EventType::KeyRelease(Key::ControlLeft)
+                    | EventType::KeyRelease(Key::ControlRight) => {
                         ctrl_pressed.store(false, Ordering::SeqCst);
                     }
                     EventType::KeyPress(Key::ShiftLeft) | EventType::KeyPress(Key::ShiftRight) => {
                         shift_pressed.store(true, Ordering::SeqCst);
                     }
-                    EventType::KeyRelease(Key::ShiftLeft) | EventType::KeyRelease(Key::ShiftRight) => {
+                    EventType::KeyRelease(Key::ShiftLeft)
+                    | EventType::KeyRelease(Key::ShiftRight) => {
                         shift_pressed.store(false, Ordering::SeqCst);
                     }
                     _ => {}
@@ -208,15 +211,16 @@ pub mod linux_hook {
                                 simulate::simulate_cut();
                                 thread::sleep(Duration::from_millis(75));
                                 let after_cut = cs.read_current();
-                                let (content, was_cut) = if after_cut.is_some() && after_cut != before {
-                                    (after_cut, true)
-                                } else if auto_cut_fallback {
-                                    simulate::simulate_copy();
-                                    thread::sleep(Duration::from_millis(75));
-                                    (cs.read_current(), false)
-                                } else {
-                                    (None, false)
-                                };
+                                let (content, was_cut) =
+                                    if after_cut.is_some() && after_cut != before {
+                                        (after_cut, true)
+                                    } else if auto_cut_fallback {
+                                        simulate::simulate_copy();
+                                        thread::sleep(Duration::from_millis(75));
+                                        (cs.read_current(), false)
+                                    } else {
+                                        (None, false)
+                                    };
 
                                 if let Some(item) = content {
                                     sm.lock().unwrap().assign(slot_idx, item);
@@ -259,7 +263,10 @@ pub mod linux_hook {
                         if !was_explicit {
                             let has_items = slot_manager.lock().unwrap().has_auto_items();
                             if has_items {
-                                let popped = slot_manager.lock().unwrap().auto_paste_pop_custom(auto_paste_pop);
+                                let popped = slot_manager
+                                    .lock()
+                                    .unwrap()
+                                    .auto_paste_pop_custom(auto_paste_pop);
                                 if let Some(item) = popped {
                                     let _ = clipboard_service.write_content(&item);
                                     (event_sink)(EngineEvent::SlotsUpdated);
@@ -295,12 +302,12 @@ pub mod linux_hook {
 
 #[cfg(not(target_os = "linux"))]
 pub mod linux_hook {
+    use crate::EngineEvent;
     use crate::clipboard::ClipboardService;
     use crate::settings::SharedSettings;
     use crate::slots::SharedSlotManager;
-    use crate::EngineEvent;
-    use std::sync::atomic::AtomicBool;
     use std::sync::Arc;
+    use std::sync::atomic::AtomicBool;
 
     pub fn start_hook(
         _event_sink: Arc<dyn Fn(EngineEvent) + Send + Sync>,
@@ -311,5 +318,6 @@ pub mod linux_hook {
         _is_cut_mode: Arc<AtomicBool>,
         _is_paste_mode: Arc<AtomicBool>,
         _is_explicit_selection: Arc<AtomicBool>,
-    ) {}
+    ) {
+    }
 }

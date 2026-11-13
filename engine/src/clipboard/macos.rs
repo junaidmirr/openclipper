@@ -1,7 +1,7 @@
 #[cfg(target_os = "macos")]
 pub mod macos_files {
-    use objc2::runtime::ProtocolObject;
     use objc2::ClassType;
+    use objc2::runtime::ProtocolObject;
     use objc2_app_kit::{NSPasteboard, NSPasteboardWriting};
     use objc2_foundation::{NSArray, NSString, NSURL};
     use std::panic;
@@ -24,11 +24,7 @@ pub mod macos_files {
                 }
             }
 
-            if paths.is_empty() {
-                None
-            } else {
-                Some(paths)
-            }
+            if paths.is_empty() { None } else { Some(paths) }
         });
 
         match result {
@@ -53,8 +49,10 @@ pub mod macos_files {
                 urls.push(url);
             }
 
-            let proto_objects: Vec<&ProtocolObject<dyn NSPasteboardWriting>> =
-                urls.iter().map(|u| ProtocolObject::from_ref(&**u)).collect();
+            let proto_objects: Vec<&ProtocolObject<dyn NSPasteboardWriting>> = urls
+                .iter()
+                .map(|u| ProtocolObject::from_ref(&**u))
+                .collect();
             let array = NSArray::from_slice(&proto_objects);
             pboard.writeObjects(&array);
             true

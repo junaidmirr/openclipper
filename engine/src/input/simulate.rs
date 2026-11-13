@@ -66,7 +66,7 @@ fn simulate_macos_key(key: rdev::Key) {
 #[cfg(target_os = "windows")]
 fn simulate_windows_ctrl_key(vk: u16) {
     use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
-        SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP, VK_CONTROL,
+        INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP, SendInput, VK_CONTROL,
     };
 
     unsafe {

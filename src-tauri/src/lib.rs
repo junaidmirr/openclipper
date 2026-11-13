@@ -86,26 +86,17 @@ fn clear_all_slots(app: AppHandle, state: State<'_, AppState>) -> Result<(), Str
 }
 
 #[tauri::command]
-fn select_slot(
-    slot_index: usize,
-    state: State<'_, AppState>,
-) -> Result<(), String> {
+fn select_slot(slot_index: usize, state: State<'_, AppState>) -> Result<(), String> {
     state.engine.select_slot(slot_index)
 }
 
 #[tauri::command]
-fn assign_to_slot(
-    slot_index: usize,
-    state: State<'_, AppState>,
-) -> Result<(), String> {
+fn assign_to_slot(slot_index: usize, state: State<'_, AppState>) -> Result<(), String> {
     state.engine.assign_to_slot(slot_index)
 }
 
 #[tauri::command]
-fn set_app_mode(
-    new_mode: String,
-    state: State<'_, AppState>,
-) -> Result<(), String> {
+fn set_app_mode(new_mode: String, state: State<'_, AppState>) -> Result<(), String> {
     state.engine.set_mode(&new_mode);
     Ok(())
 }
@@ -143,11 +134,23 @@ fn dismiss_hud(app: AppHandle, state: State<'_, AppState>) -> Result<(), String>
 #[tauri::command]
 fn show_hud(app: AppHandle, state: State<'_, AppState>) -> Result<(), String> {
     show_hud_top_right(&app);
-    let mode = if state.engine.is_paste_mode.load(std::sync::atomic::Ordering::SeqCst) {
+    let mode = if state
+        .engine
+        .is_paste_mode
+        .load(std::sync::atomic::Ordering::SeqCst)
+    {
         "paste"
-    } else if state.engine.is_cut_mode.load(std::sync::atomic::Ordering::SeqCst) {
+    } else if state
+        .engine
+        .is_cut_mode
+        .load(std::sync::atomic::Ordering::SeqCst)
+    {
         "cut"
-    } else if state.engine.is_copy_mode.load(std::sync::atomic::Ordering::SeqCst) {
+    } else if state
+        .engine
+        .is_copy_mode
+        .load(std::sync::atomic::Ordering::SeqCst)
+    {
         "copy"
     } else {
         "idle"
@@ -184,7 +187,8 @@ pub fn show_hud_top_right(app: &AppHandle) {
             let x = screen_size.width as i32 - win_width - 16;
             let y = (36.0 * scale) as i32;
 
-            let _ = window.set_position(tauri::Position::Physical(tauri::PhysicalPosition { x, y }));
+            let _ =
+                window.set_position(tauri::Position::Physical(tauri::PhysicalPosition { x, y }));
         }
         let _ = window.show();
     }
@@ -226,7 +230,8 @@ pub fn run() {
                     );
                 }
                 EngineEvent::ModeChanged { mode, info } => {
-                    let _ = app_handle_events.emit("mode-changed", ModeChangedPayload { mode, info });
+                    let _ =
+                        app_handle_events.emit("mode-changed", ModeChangedPayload { mode, info });
                 }
                 EngineEvent::AccessibilityStatus(trusted) => {
                     let _ = app_handle_events.emit("accessibility-status", trusted);
@@ -250,42 +255,18 @@ pub fn run() {
             engine.start();
 
             // Menu Bar Tray Icon
-            let toggle_item = MenuItem::with_id(
-                app,
-                "toggle",
-                "Toggle OpenClipper HUD",
-                true,
-                None::<&str>,
-            )?;
-            let mode_auto = MenuItem::with_id(
-                app,
-                "mode_auto",
-                "Mode: Auto Conveyor",
-                true,
-                None::<&str>,
-            )?;
-            let mode_copy = MenuItem::with_id(
-                app,
-                "mode_copy",
-                "Mode: Manual Copy",
-                true,
-                None::<&str>,
-            )?;
-            let mode_cut = MenuItem::with_id(
-                app,
-                "mode_cut",
-                "Mode: Manual Cut",
-                true,
-                None::<&str>,
-            )?;
-            let mode_paste = MenuItem::with_id(
-                app,
-                "mode_paste",
-                "Mode: Manual Paste",
-                true,
-                None::<&str>,
-            )?;
-            let clear_item = MenuItem::with_id(app, "clear", "Clear All Slots", true, None::<&str>)?;
+            let toggle_item =
+                MenuItem::with_id(app, "toggle", "Toggle OpenClipper HUD", true, None::<&str>)?;
+            let mode_auto =
+                MenuItem::with_id(app, "mode_auto", "Mode: Auto Conveyor", true, None::<&str>)?;
+            let mode_copy =
+                MenuItem::with_id(app, "mode_copy", "Mode: Manual Copy", true, None::<&str>)?;
+            let mode_cut =
+                MenuItem::with_id(app, "mode_cut", "Mode: Manual Cut", true, None::<&str>)?;
+            let mode_paste =
+                MenuItem::with_id(app, "mode_paste", "Mode: Manual Paste", true, None::<&str>)?;
+            let clear_item =
+                MenuItem::with_id(app, "clear", "Clear All Slots", true, None::<&str>)?;
             let settings_item =
                 MenuItem::with_id(app, "settings", "Preferences...", true, Some("CmdOrCtrl+,"))?;
             let quit_item =
@@ -305,7 +286,10 @@ pub fn run() {
             )?;
 
             let engine_tray = engine.clone();
-            let icon_img = app.default_window_icon().cloned().expect("Default window icon");
+            let icon_img = app
+                .default_window_icon()
+                .cloned()
+                .expect("Default window icon");
 
             let _tray = TrayIconBuilder::new()
                 .icon(icon_img)

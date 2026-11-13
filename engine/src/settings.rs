@@ -14,21 +14,21 @@ pub struct AppSettings {
     pub double_tap_timeout_ms: u64,    // default: 500
 
     // Slot Behavior
-    pub slot_count: usize,             // default: 9 (range: 3..15)
-    pub auto_paste_pop: bool,          // default: true (conveyor belt pop)
-    pub auto_copy_direction: String,   // "fifo" (append) or "lifo" (prepend)
-    pub auto_cut_fallback: bool,       // default: true
-    pub persist_slots: bool,           // default: false
-    pub play_sounds: bool,             // default: true
+    pub slot_count: usize,           // default: 9 (range: 3..15)
+    pub auto_paste_pop: bool,        // default: true (conveyor belt pop)
+    pub auto_copy_direction: String, // "fifo" (append) or "lifo" (prepend)
+    pub auto_cut_fallback: bool,     // default: true
+    pub persist_slots: bool,         // default: false
+    pub play_sounds: bool,           // default: true
 
     // Appearance & Themes
-    pub theme: String,                 // "light" | "dark" | "system"
-    pub accent_color: String,          // "orange" | "blue" | "green" | "purple" | "red"
-    pub hud_opacity: u32,              // default: 100
-    pub show_hud_on_copy: bool,        // default: false
+    pub theme: String,          // "light" | "dark" | "system"
+    pub accent_color: String,   // "orange" | "blue" | "green" | "purple" | "red"
+    pub hud_opacity: u32,       // default: 100
+    pub show_hud_on_copy: bool, // default: false
 
     // General & System
-    pub launch_at_startup: bool,       // default: false
+    pub launch_at_startup: bool, // default: false
 }
 
 impl Default for AppSettings {

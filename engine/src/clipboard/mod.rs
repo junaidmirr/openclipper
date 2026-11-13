@@ -4,8 +4,8 @@ pub mod windows;
 
 use crate::slots::SlotContent;
 use arboard::{Clipboard, ImageData};
-use base64::engine::general_purpose::STANDARD as BASE64;
 use base64::Engine;
+use base64::engine::general_purpose::STANDARD as BASE64;
 use image::{ImageBuffer, Rgba};
 use std::borrow::Cow;
 use std::io::Cursor;
@@ -27,9 +27,8 @@ impl ClipboardService {
 
     /// Read the current clipboard payload (Files, Image, or Text) with panic protection
     pub fn read_current(&self) -> Option<SlotContent> {
-        let res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-            self.read_current_inner()
-        }));
+        let res =
+            std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| self.read_current_inner()));
 
         match res {
             Ok(content) => content,

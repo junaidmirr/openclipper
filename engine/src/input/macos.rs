@@ -1,14 +1,14 @@
 #[cfg(target_os = "macos")]
 pub mod tap {
+    use crate::EngineEvent;
     use crate::clipboard::ClipboardService;
     use crate::input::simulate;
     use crate::settings::SharedSettings;
     use crate::slots::SharedSlotManager;
-    use crate::EngineEvent;
     use objc2_foundation::{NSDictionary, NSNumber, NSString};
     use std::ffi::c_void;
-    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
     use std::sync::Arc;
+    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
     use std::thread;
     use std::time::Duration;
 
@@ -237,7 +237,8 @@ pub mod tap {
         // 1. Detect Copy Mode: Ctrl/Cmd + Shift + C or Double-tap C
         if ctrl_or_cmd && has_shift && keycode == VK_ANSI_C {
             let last = ctx.last_c_tap_ms.load(Ordering::SeqCst);
-            let is_double_tap = double_tap_enabled && now_ms.saturating_sub(last) < double_tap_timeout;
+            let is_double_tap =
+                double_tap_enabled && now_ms.saturating_sub(last) < double_tap_timeout;
             ctx.last_c_tap_ms.store(now_ms, Ordering::SeqCst);
 
             let current_copy = ctx.is_copy_mode.load(Ordering::SeqCst);
@@ -267,7 +268,8 @@ pub mod tap {
         // 2. Detect Manual Cut Mode: Ctrl/Cmd + Shift + X or Double-tap X
         if ctrl_or_cmd && has_shift && keycode == VK_ANSI_X {
             let last = ctx.last_x_tap_ms.load(Ordering::SeqCst);
-            let is_double_tap = double_tap_enabled && now_ms.saturating_sub(last) < double_tap_timeout;
+            let is_double_tap =
+                double_tap_enabled && now_ms.saturating_sub(last) < double_tap_timeout;
             ctx.last_x_tap_ms.store(now_ms, Ordering::SeqCst);
 
             let current_cut = ctx.is_cut_mode.load(Ordering::SeqCst);
@@ -297,7 +299,8 @@ pub mod tap {
         // 3. Detect Paste Mode: Ctrl/Cmd + Shift + V or Double-tap V
         if ctrl_or_cmd && has_shift && keycode == VK_ANSI_V {
             let last = ctx.last_v_tap_ms.load(Ordering::SeqCst);
-            let is_double_tap = double_tap_enabled && now_ms.saturating_sub(last) < double_tap_timeout;
+            let is_double_tap =
+                double_tap_enabled && now_ms.saturating_sub(last) < double_tap_timeout;
             ctx.last_v_tap_ms.store(now_ms, Ordering::SeqCst);
 
             let current_paste = ctx.is_paste_mode.load(Ordering::SeqCst);

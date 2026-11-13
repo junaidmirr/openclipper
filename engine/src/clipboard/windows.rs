@@ -45,11 +45,7 @@ pub mod windows_files {
 
             CloseClipboard();
 
-            if files.is_empty() {
-                None
-            } else {
-                Some(files)
-            }
+            if files.is_empty() { None } else { Some(files) }
         }
     }
 

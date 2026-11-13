@@ -3,12 +3,12 @@ pub mod macos;
 pub mod simulate;
 pub mod windows;
 
+use crate::EngineEvent;
 use crate::clipboard::ClipboardService;
 use crate::settings::SharedSettings;
 use crate::slots::SharedSlotManager;
-use crate::EngineEvent;
-use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
 
 pub fn start_input_hook(
     event_sink: Arc<dyn Fn(EngineEvent) + Send + Sync>,
