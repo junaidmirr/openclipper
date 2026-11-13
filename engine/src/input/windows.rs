@@ -5,8 +5,8 @@ pub mod hook {
     use crate::input::simulate;
     use crate::settings::SharedSettings;
     use crate::slots::SharedSlotManager;
-    use std::sync::Arc;
     use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+    use std::sync::{Arc, OnceLock};
     use std::thread;
     use std::time::Duration;
     use windows_sys::Win32::Foundation::{LPARAM, LRESULT, WPARAM};
@@ -35,7 +35,7 @@ pub mod hook {
     const VK_SHIFT: u32 = 0x10;
     const VK_CONTROL: u32 = 0x11;
 
-    static mut HOOK_CTX: Option<Arc<WindowsHookContext>> = None;
+    static HOOK_CTX: OnceLock<Arc<WindowsHookContext>> = OnceLock::new();
 
     pub struct WindowsHookContext {
         pub event_sink: Arc<dyn Fn(EngineEvent) + Send + Sync>,
@@ -75,9 +75,7 @@ pub mod hook {
             last_v_tap_ms: Arc::new(AtomicU64::new(0)),
         });
 
-        unsafe {
-            HOOK_CTX = Some(ctx);
-        }
+        let _ = HOOK_CTX.set(ctx);
 
         thread::spawn(move || unsafe {
             let hook: HHOOK = SetWindowsHookExW(
@@ -116,7 +114,7 @@ pub mod hook {
                 return CallNextHookEx(std::ptr::null_mut(), n_code, w_param, l_param);
             }
 
-            let ctx = match &HOOK_CTX {
+            let ctx = match HOOK_CTX.get() {
                 Some(c) => c,
                 None => return CallNextHookEx(std::ptr::null_mut(), n_code, w_param, l_param),
             };

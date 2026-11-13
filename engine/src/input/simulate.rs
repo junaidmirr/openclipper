@@ -1,4 +1,6 @@
+#[cfg(not(target_os = "windows"))]
 use std::thread;
+#[cfg(not(target_os = "windows"))]
 use std::time::Duration;
 
 pub fn simulate_paste() {
